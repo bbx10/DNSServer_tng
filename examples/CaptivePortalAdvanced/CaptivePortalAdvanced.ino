@@ -1,9 +1,18 @@
+#ifdef ESP8266
 #include <ESP8266WiFi.h>
 #include <WiFiClient.h> 
 #include <ESP8266WebServer.h>
 #include <DNSServer.h>
 #include <ESP8266mDNS.h>
 #include <EEPROM.h>
+#else
+#include <WiFi.h>
+#include <WiFiClient.h>
+#include <WebServer.h>
+#include <DNSServer.h>
+#include <ESPmDNS.h>
+#include <Preferences.h>
+#endif
 
 /*
  * This example serves a "hello world" on a WLAN and a SoftAP at the same time.
@@ -12,7 +21,7 @@
  * Connect your computer or cell phone to wifi network ESP_ap with password 12345678. A popup may appear and it allow you to go to WLAN config. If it does not then navigate to http://192.168.4.1/wifi and config it there.
  * Then wait for the module to connect to your wifi and take note of the WLAN IP it got. Then you can disconnect from ESP_ap and return to your regular WLAN.
  * 
- * Now the ESP8266 is in your network. You can reach it through http://192.168.x.x/ (the IP you took note of) or maybe at http://esp8266.local too.
+ * Now the ESP8266/ESP32 is in your network. You can reach it through http://192.168.x.x/ (the IP you took note of) or maybe at http://esp8266.local too.
  * 
  * This is a captive portal because through the softAP it will redirect any http request to http://192.168.4.1/
  */
@@ -22,7 +31,11 @@ const char *softAP_ssid = "ESP_ap";
 const char *softAP_password = "12345678";
 
 /* hostname for mDNS. Should work at least on windows. Try http://esp8266.local */
+#ifdef ESP8266
 const char *myHostname = "esp8266";
+#else
+const char *myHostname = "esp32mambo";
+#endif
 
 /* Don't set this wifi credentials. They are configurated at runtime and stored on EEPROM */
 char ssid[32] = "";
@@ -33,7 +46,12 @@ const byte DNS_PORT = 53;
 DNSServer dnsServer;
 
 // Web server
-ESP8266WebServer server(80);
+WebServer server(80);
+
+#ifdef ESP32
+/* Storage for SSID and password */
+Preferences preferences;
+#endif
 
 /* Soft AP network parameters */
 IPAddress apIP(192, 168, 4, 1);
@@ -51,8 +69,11 @@ int status = WL_IDLE_STATUS;
 
 void setup() {
   delay(1000);
-  Serial.begin(9600);
+  Serial.begin(115200);
   Serial.println();
+#ifdef ESP32
+  preferences.begin("CapPortAdv", false);
+#endif
   Serial.print("Configuring access point...");
   /* You can remove the password parameter if you want the AP to be open. */
   WiFi.softAPConfig(apIP, apIP, netMsk);

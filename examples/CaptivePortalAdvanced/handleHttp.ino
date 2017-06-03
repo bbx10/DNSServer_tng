@@ -75,7 +75,11 @@ void handleWifi() {
   Serial.println("scan done");
   if (n > 0) {
     for (int i = 0; i < n; i++) {
+#ifdef ESP8266
       server.sendContent(String() + "\r\n<tr><td>SSID " + WiFi.SSID(i) + String((WiFi.encryptionType(i) == ENC_TYPE_NONE)?" ":" *") + " (" + WiFi.RSSI(i) + ")</td></tr>");
+#else
+      server.sendContent(String() + "\r\n<tr><td>SSID " + WiFi.SSID(i) + String((WiFi.encryptionType(i) == WIFI_AUTH_OPEN)?" ":" *") + " (" + WiFi.RSSI(i) + ")</td></tr>");
+#endif
     }
   } else {
     server.sendContent(String() + "<tr><td>No WLAN found</td></tr>");
