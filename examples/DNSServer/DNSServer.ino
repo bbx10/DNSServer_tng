@@ -2,16 +2,17 @@
 #include <ESP8266WiFi.h>
 #include <DNSServer.h>
 #include <ESP8266WebServer.h>
+ESP8266WebServer webServer(80);
 #else
 #include <WiFi.h>
 #include <DNSServer.h>
 #include <WebServer.h>
+WebServer webServer(80);
 #endif
 
 const byte DNS_PORT = 53;
 IPAddress apIP(192, 168, 1, 1);
 DNSServer dnsServer;
-WebServer webServer(80);
 
 void setup() {
   WiFi.mode(WIFI_AP);

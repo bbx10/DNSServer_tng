@@ -5,6 +5,8 @@
 #include <DNSServer.h>
 #include <ESP8266mDNS.h>
 #include <EEPROM.h>
+// Web server
+ESP8266WebServer server(80);
 #else
 #include <WiFi.h>
 #include <WiFiClient.h>
@@ -12,6 +14,8 @@
 #include <DNSServer.h>
 #include <ESPmDNS.h>
 #include <Preferences.h>
+// Web server
+WebServer server(80);
 #endif
 
 /*
@@ -44,9 +48,6 @@ char password[32] = "";
 // DNS server
 const byte DNS_PORT = 53;
 DNSServer dnsServer;
-
-// Web server
-WebServer server(80);
 
 #ifdef ESP32
 /* Storage for SSID and password */
