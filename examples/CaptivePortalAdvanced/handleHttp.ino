@@ -21,6 +21,7 @@ void handleRoot() {
     "<p>You may want to <a href='/wifi'>config the wifi connection</a>.</p>"
     "</body></html>"
   );
+  server.sendContent("");
   server.client().stop(); // Stop is needed because we sent no content length
 }
 
@@ -93,6 +94,7 @@ void handleWifi() {
     "<p>You may want to <a href='/'>return to the home page</a>.</p>"
     "</body></html>"
   );
+  server.sendContent("");
   server.client().stop(); // Stop is needed because we sent no content length
 }
 
